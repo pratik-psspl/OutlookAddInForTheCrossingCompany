@@ -1,0 +1,11 @@
+{
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript"
+    ],
+    "appService.deploySubpath": "dist",
+    "appService.defaultWebAppToDeploy": "None",
+    "git.ignoreLimitWarning": true
+  }
+  
