@@ -351,184 +351,170 @@ export class ViewListItemDetails extends React.Component {
     }
     return (
       <div>
-        <div className="ms-Grid" dir="ltr">
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">
-              <MyRegistryDetailList callParentRefreshFn={this.handleRefreshClick} />
-              <br />
-              <br />
+        <MyRegistryDetailList callParentRefreshFn={this.handleRefreshClick} />
+        <RouterLink className="back-btn" to="/">My Registry</RouterLink>
+        <div className="detail-content-block">
+          <div className="ms-Grid" dir="ltr">
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm12">
+                <Link target="_blank" href={`${StaticConst.spSite}sitepages/iw_EditForm.aspx?pageType=6&lID=${StaticConst.lists.TCGProjectRegistry}&itemID=${this.props.location.selectedItemFields.id}`}>{this.state.Bid_x0020__x0023_}</Link>
+              </div>
             </div>
-          </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">
-              <RouterLink to="/">My Registry</RouterLink>
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm12">{this.state.Project_x0020_Name}</div>
             </div>
-          </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">
-              <Link target="_blank" href={`${StaticConst.spSite}sitepages/iw_EditForm.aspx?pageType=6&lID=${StaticConst.lists.TCGProjectRegistry}&itemID=${this.props.location.selectedItemFields.id}`}>{this.state.Bid_x0020__x0023_}</Link>
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm12">{this.state.Title}</div>
             </div>
-          </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">{this.state.Project_x0020_Name}</div>
-          </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">{this.state.Title}</div>
-          </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm6">
-              <b>Value</b>
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm6">
+                <b>Value</b>
+              </div>
+              <div className="ms-Grid-col ms-sm6">
+                <b>Due Date</b>
+              </div>
             </div>
-            <div className="ms-Grid-col ms-sm6">
-              <b>Due Date</b>
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm6">
+                {ConvertNumberToCurrenty(this.state.Estimated_x0020_Project_x0020_Va)}{" "}
+              </div>
+              <div className="ms-Grid-col ms-sm6">{this.state.Bid_x0020_Due_x0020_Date}</div>
             </div>
-          </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm6">
-              {ConvertNumberToCurrenty(this.state.Estimated_x0020_Project_x0020_Va)}{" "}
-            </div>
-            <div className="ms-Grid-col ms-sm6">{this.state.Bid_x0020_Due_x0020_Date}</div>
-          </div>
-          <DisplayItemsFromMultiLookUp objArray={this.state.ContactsDetails} displayName="Client Contacts" />
-          <DisplayItemsFromMultiLookUp
-            objArray={this.state.Client_x0020_Company}
-            displayName="Client Companies"
-            forCompany={true}
-          />
+            <DisplayItemsFromMultiLookUp objArray={this.state.ContactsDetails} displayName="Client Contacts" />
+            <DisplayItemsFromMultiLookUp
+              objArray={this.state.Client_x0020_Company}
+              displayName="Client Companies"
+              forCompany={true}
+            />
 
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm6">
-              <Link
-                href={`https://thecrossinggroup.sharepoint.com/ttc_usa/estimating/BidFiles/Forms/AllItems.aspx?id=/ttc_usa/estimating/BidFiles/${this.state.Bid_x0020__x0023_} ${this.state.Project_x0020_Name}`}
-                target="_blank"
-              >
-                Bid Files
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm12">
+                <Link className="small-btn"
+                  href={`https://thecrossinggroup.sharepoint.com/ttc_usa/estimating/BidFiles/Forms/AllItems.aspx?id=/ttc_usa/estimating/BidFiles/${this.state.Bid_x0020__x0023_} ${this.state.Project_x0020_Name}`}
+                  target="_blank"
+                >
+                  Bid Files
               </Link>
-            </div>
-            <div className="ms-Grid-col ms-sm6">
-              <Link
-                href={`https://thecrossinggroup.sharepoint.com/ttc_usa/projmgmt/ProjectFiles/Forms/AllItems.aspx?id=/ttc_usa/projmgmt/ProjectFiles/${this.state.Bid_x0020__x0023_} ${this.state.Project_x0020_Name}`}
-                target="_blank"
-              >
-                Project Files
+                <Link className="small-btn"
+                  href={`https://thecrossinggroup.sharepoint.com/ttc_usa/projmgmt/ProjectFiles/Forms/AllItems.aspx?id=/ttc_usa/projmgmt/ProjectFiles/${this.state.Bid_x0020__x0023_} ${this.state.Project_x0020_Name}`}
+                  target="_blank"
+                >
+                  Project Files
               </Link>
-            </div>
-          </div>
+              </div>
 
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">
-              <Dropdown
-                defaultSelectedKey={this.state.Status.replace(/ /g, "")}
-                placeholder="Select an option"
-                label="Project Status"
-                onChange={this.onStatusChange}
-                options={this.state.StatusOptions}
-              />
             </div>
-          </div>
 
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">
-              <b>Next Contact Date</b>
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm12">
+                <Dropdown
+                  defaultSelectedKey={this.state.Status.replace(/ /g, "")}
+                  placeholder="Select an option"
+                  label="Project Status"
+                  onChange={this.onStatusChange}
+                  options={this.state.StatusOptions}
+                />
+              </div>
             </div>
-          </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm8">
-              <DatePicker
-                showMonthPickerAsOverlay={true}
-                value={this.state.Next_x0020_Contact_x0020_Date}
-                onSelectDate={this.onSelectDate}
-                placeholder="Select a date..."
-                ariaLabel="Select a date"
-              />
-            </div>
-            <div className="ms-Grid-col ms-sm2">
-              <ActionButton onClick={this.AddDays}>+7d</ActionButton>
-            </div>
-            <div className="ms-Grid-col ms-sm2">
-              <ActionButton onClick={this.AddMonth}>clear</ActionButton>
-            </div>
-          </div>
 
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">
-              <TextField
-                value={this.state.NotesAdd}
-                onChange={this.onTextFieldChange}
-                label="New Note"
-                multiline
-                rows={3}
-              />
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm12">
+                <b>Next Contact Date</b>
+              </div>
             </div>
-          </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm10"></div>
-            <div className="ms-Grid-col ms-sm10">
-              <PrimaryButton text="Prepend Data and New Note" onClick={this.onPrependNewNote}></PrimaryButton>
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm12 date-block">
+                <div className="flex-1">
+                  <DatePicker
+                    showMonthPickerAsOverlay={true}
+                    value={this.state.Next_x0020_Contact_x0020_Date}
+                    onSelectDate={this.onSelectDate}
+                    placeholder="Select a date..."
+                    ariaLabel="Select a date"
+                  />
+                </div>
+                <ActionButton onClick={this.AddDays}>+7d</ActionButton>
+                <ActionButton onClick={this.AddMonth}>clear</ActionButton>
+              </div>
             </div>
-          </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">
-              {/* <p> {this.state.Comments}</p> */}
-              <TextField
-                label="Comments"
-                value={this.state.Comments}
-                multiline
-                rows={4}
-                onChange={this.onCommentTextChange}
-              />
-            </div>
-          </div>
 
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm5"></div>
-            <div className="ms-Grid-col ms-sm3">
-              <PrimaryButton text="Save" onClick={this.onSaveClick} />
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm12">
+                <TextField
+                  value={this.state.NotesAdd}
+                  onChange={this.onTextFieldChange}
+                  label="New Note"
+                  multiline
+                  rows={3}
+                />
+              </div>
             </div>
-            <div className="ms-Grid-col ms-sm3">
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm10"></div>
+              <div className="ms-Grid-col ms-sm10">
+                <PrimaryButton text="Prepend Data and New Note" onClick={this.onPrependNewNote}></PrimaryButton>
+              </div>
+            </div>
+            <div className="ms-Grid-row">
+              <div className="ms-Grid-col ms-sm12">
+                {/* <p> {this.state.Comments}</p> */}
+                <TextField
+                  label="Comments"
+                  value={this.state.Comments}
+                  multiline
+                  rows={4}
+                  onChange={this.onCommentTextChange}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="ms-Grid">
+          <div className="ms-Grid-row">
+
+            <div className="ms-Grid-col ms-sm12">
+              <PrimaryButton className="mr-8" text="Save" onClick={this.onSaveClick} />
               <RouterLink to="/">
                 <DefaultButton text="Cancel" />
               </RouterLink>
             </div>
           </div>
-          <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">
-              <i>
-                Last Updated : {moment(this.state.Modified).format("LLL").toString()}- {this.state.lastModifiedBy}
-              </i>
-            </div>
-          </div>
-          {/* Confirm dialog for merge/update conflict */}
-          <Dialog
-            hidden={this.state.hideDisplayDialogToRefresh}
-            onDismiss={this.handleRefreshClick}
-            dialogContentProps={{
-              type: DialogType.normal,
-              title: "Update Conflict",
-              closeButtonAriaLabel: "Close",
-              subText: "Someone has updated the record, Please reload and continue.",
-            }}
-          >
-            <DialogFooter>
-              <PrimaryButton onClick={this.handleRefreshClick} text="Reload" />
-            </DialogFooter>
-          </Dialog>
-          {/* Save successsfully dialogue */}
-          <Dialog
-            hidden={this.state.hideSaveSuccessfullyDialog}
-            onDismiss={this.handleRefreshClick}
-            dialogContentProps={{
-              type: DialogType.normal,
-              title: "Saved Successfully!",
-              closeButtonAriaLabel: "Close",
-              subText: "Item updated, Please click OK to view the changes.",
-            }}
-          >
-            <DialogFooter>
-              <PrimaryButton onClick={this.handleRefreshClick} text="OK" />
-            </DialogFooter>
-          </Dialog>
         </div>
+        <div className="last-update-block">
+          Last Updated : {moment(this.state.Modified).format("LLL").toString()}- {this.state.lastModifiedBy}
+        </div>
+
+
+        {/* Confirm dialog for merge/update conflict */}
+        <Dialog
+          hidden={this.state.hideDisplayDialogToRefresh}
+          onDismiss={this.handleRefreshClick}
+          dialogContentProps={{
+            type: DialogType.normal,
+            title: "Update Conflict",
+            closeButtonAriaLabel: "Close",
+            subText: "Someone has updated the record, Please reload and continue.",
+          }}
+        >
+          <DialogFooter>
+            <PrimaryButton onClick={this.handleRefreshClick} text="Reload" />
+          </DialogFooter>
+        </Dialog>
+        {/* Save successsfully dialogue */}
+        <Dialog
+          hidden={this.state.hideSaveSuccessfullyDialog}
+          onDismiss={this.handleRefreshClick}
+          dialogContentProps={{
+            type: DialogType.normal,
+            title: "Saved Successfully!",
+            closeButtonAriaLabel: "Close",
+            subText: "Item updated, Please click OK to view the changes.",
+          }}
+        >
+          <DialogFooter>
+            <PrimaryButton onClick={this.handleRefreshClick} text="OK" />
+          </DialogFooter>
+        </Dialog>
       </div>
     );
   }
