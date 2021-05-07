@@ -231,7 +231,7 @@ export class ViewListItemDetails extends React.Component {
     const styles = { root: { display: "inline-block" } };
     const calloutProps = { gapSpace: 0 };
     if (this.state.isdataLoading) {
-      return <center><Label>Please wait</Label><Spinner message="" label="Getting Data from SharePoint List..." /></center>;
+      return <center><div className="loding-block"><Label>Please wait</Label><Spinner message="" label="Getting Data from SharePoint List..." /></div></center>;
     }
     function DisplayItemsFromMultiLookUp({ objArray, displayName, forCompany }) {
       if (forCompany) {

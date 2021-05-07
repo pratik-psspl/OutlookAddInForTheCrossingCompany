@@ -9,6 +9,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  
 }
 
 ul {
@@ -87,9 +88,68 @@ b {
   height: 80%;
 }
 .contactDetailsFooter {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 60px; /* Height of the footer */
-  background: #6cf;
+  background: #d03b49;
+  padding: 10px;
+}
+.contactDetailsFooter *{
+  color: #fff !important;
+}
+.top-navigation{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+}
+.content-block{
+  height: calc(100vh - 145px);
+  overflow: auto;
+}
+.title{
+    padding: 18px 8px;
+    background: #d03b49;
+    color: #fff;
+    font-size: 17px;
+    line-height: 1;
+    margin: 0;
+}
+.listing{
+  display: flex;
+}
+.listing .icon-block{
+  max-width: 30px;
+  min-width: 30px;
+  margin-right: 10px;
+  margin-top: 5px;
+}
+.listing .icon-block .icon{
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+.listing .icon-block .icon.yellow{
+  background: #ffbf00;
+}
+.listing .icon-block .icon.red{
+  background: #a4262c;
+}
+.listing .icon-block .icon.blue{
+  background: #0000ff;
+}
+.listing .content-list{
+  flex:1;
+  min-width: 5px;
+  }
+.listing .list-title a{
+  font-size: 16px;
+  display: block;
+  color: #cb2534;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.listing .inner-content p{
+  margin: 0 0 5px;
+}
+.loding-block{
+  height: calc(100vh - 90px);
 }

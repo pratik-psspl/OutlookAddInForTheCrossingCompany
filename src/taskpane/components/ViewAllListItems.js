@@ -142,59 +142,46 @@ export class ViewAllListItems extends React.Component {
       let color = [];
 
       if (dateValue.isAfter(todaysDate) && dateValue.isBefore(next5Days)) {
-        color = [{ id: "status", label: "status", color: "#ffbf00 " }];
+        color = "yellow icon";
       } else if (dateValue.isSameOrBefore(todaysDate)) {
         //today or older
-        color = [{ id: "status", label: "status", color: "#a4262c" }];
+        color =  "red icon" ;
       } else {
-        color = [{ id: "status", label: "status", color: "#0000ff" }];
+        color = "blue icon";
       }
 
       return (
-        <SwatchColorPicker
-          columnCount={5}
-          className="customCollorPicker"
-          cellHeight={25}
-          cellBorderWidth={0}
-          cellWidth={20}
-          focusOnHover={true}
-          cellShape={"square"}
-          colorCells={color}
+        <div
+          
+          className={color}
+          
         />
       );
     }
 
     return (
       <React.Fragment>
-        <div className="ms-Grid-row">
-          <div className="ms-Grid-col ms-sm2">
-            <ColorIconBasedOnStatus nextDate={item.fields.Next_x0020_Contact_x0020_Date}></ColorIconBasedOnStatus>
-          </div>
-          <div className="ms-Grid-col ms-sm10">
-            <Link
-              to={{ pathname: "/ViewListItemDetails", selectedItemFields: item.fields }}
-              className="btn-primary full-width"
-            >
-              <i className={`ms-Icon ms-Icon--${item.id}`}>{item.id}</i> |
-              <b>
+        <div className="listing">
+            <div className="icon-block">
+              <ColorIconBasedOnStatus nextDate={item.fields.Next_x0020_Contact_x0020_Date}></ColorIconBasedOnStatus>
+            </div>
+            <div className="content-list">
+                <div className="list-title">
+                  <Link
+                to={{ pathname: "/ViewListItemDetails", selectedItemFields: item.fields }}
+                className="btn-primary full-width"
+              >
                 {item.fields.Bid_x0020__x0023_} {item.fields.Project_x0020_Name}
-              </b>
-            </Link>
-          </div>
+              </Link>
+              </div>
+              <div className="inner-content">
+                  <p><label>Next :</label> <span>{moment(item.fields.Next_x0020_Contact_x0020_Date).format("YYYY-MM-DD")}</span></p>
+                  <p><label>Status :</label> <span>{item.fields.Status}</span></p>
+                  <p><label>Value :</label> <span>$ { (Math.round(item.fields.Estimated_x0020_Project_x0020_Va * 100) / 100).toLocaleString()}</span></p>
+              </div>
+            </div>
         </div>
-        <div className="ms-Grid-row">
-          <div className="ms-Grid-col ms-sm2"></div>
-          <div className="ms-Grid-col ms-sm10">
-            <p>
-              Next : {moment(item.fields.Next_x0020_Contact_x0020_Date).format("YYYY-MM-DD")}
-              <br />
-              Status: {item.fields.Status}
-              <br />
-              Value: $ { (Math.round(item.fields.Estimated_x0020_Project_x0020_Va * 100) / 100).toLocaleString()}
-            </p>
-          </div>
-        </div>
-      </React.Fragment>
+        </React.Fragment>
     );
   }
   onRenderDetailsHeader(detailsHeaderProps) {
@@ -210,21 +197,20 @@ export class ViewAllListItems extends React.Component {
 
         {this.state.isLoading == true && (
           <center>
+            <div className="loding-block">
             <Label>Please wait</Label>
             <Spinner
               label={`Getting Details selected item...`}
             />
+            </div>
           </center>
         )}
 
         {this.state.isLoading == false && this.state.error == null && (
-          <div className="ms-Grid" dir="ltr">
-            <div className="ms-Grid-row">
-              <div className="ms-Grid-col ms-sm12">
-                <h3>My Registry with Next Contact Date</h3>
-              </div>
-            </div>
-            <div className="ms-Grid-row">
+          <div>
+                <h3 class="title">My Registry with Next Contact Date</h3>
+            <div className="ms-Grid" dir="ltr">
+            <div className="ms-Grid-row content-block">
               {this.state.items.length<1 && <Label>No Record Found</Label>}
               <MarqueeSelection selection={this._selection}>
                 <DetailsList
@@ -245,6 +231,7 @@ export class ViewAllListItems extends React.Component {
               </MarqueeSelection>
             </div>
           </div>
+        </div>
         )}
       </div>
     );
