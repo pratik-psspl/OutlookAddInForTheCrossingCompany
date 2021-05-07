@@ -190,7 +190,7 @@ export class ViewAllListItems extends React.Component {
               <br />
               Status: {item.fields.Status}
               <br />
-              Value: $ {item.fields.Estimated_x0020_Project_x0020_Va}
+              Value: $ { (Math.round(item.fields.Estimated_x0020_Project_x0020_Va * 100) / 100).toLocaleString()}
             </p>
           </div>
         </div>

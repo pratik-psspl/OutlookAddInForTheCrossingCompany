@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Announced } from "office-ui-fabric-react/lib/Announced";
 import {
   TextField,
   PrimaryButton,
@@ -13,18 +12,10 @@ import {
   Label,
   Dialog,
   DialogFooter,
-  DialogType,
+  DialogType,Spinner,DefaultButton
 } from "office-ui-fabric-react";
-import { DetailsList, DetailsListLayoutMode, Selection, SelectionMode } from "office-ui-fabric-react/lib/DetailsList";
-import { MarqueeSelection } from "office-ui-fabric-react/lib/MarqueeSelection";
-import { Fabric } from "office-ui-fabric-react/lib/Fabric";
-import { mergeStyles } from "office-ui-fabric-react/lib/Styling";
-import { Text, Spinner } from "office-ui-fabric-react";
-import { IconButton, IButtonStyles, DefaultButton } from "office-ui-fabric-react/lib/Button";
 import { Link as RouterLink } from "react-router-dom";
-import { IOverflowSetItemProps, OverflowSet } from "office-ui-fabric-react/lib/OverflowSet";
 import { MyRegistryDetailList } from "./MyRegistryDetailList";
-import axios from "axios";
 import { StaticConst } from "../helper/Const";
 import { AsyncHelper } from "../helper/AsyncHelper";
 import moment from "moment";
@@ -35,7 +26,6 @@ export class ViewListItemDetails extends React.Component {
     super(props);
     this.state = this.initState();
     this.onSaveClick = this.onSaveClick.bind(this);
-    //this.onTextchange = this.onTextchange.bind(this);
   }
 
   initState() {
@@ -344,6 +334,9 @@ export class ViewListItemDetails extends React.Component {
             <div className="ms-Grid-col ms-sm12">{this.state.Project_x0020_Name}</div>
           </div>
           <div className="ms-Grid-row">
+            <div className="ms-Grid-col ms-sm12">{this.state.Title}</div>
+          </div>
+          <div className="ms-Grid-row">
             <div className="ms-Grid-col ms-sm6">
               <b>Value</b>
             </div>
@@ -464,7 +457,7 @@ export class ViewListItemDetails extends React.Component {
           </div>
           <Dialog
             hidden={this.state.hideDisplayDialogToRefresh}
-            //onDismiss={toggleHideDialog}
+            onDismiss={this.handleRefreshClick}
             dialogContentProps={{
               type: DialogType.normal,
               title: "Update Conflict",
