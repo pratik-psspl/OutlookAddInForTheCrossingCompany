@@ -6,13 +6,14 @@ import { MarqueeSelection } from "office-ui-fabric-react/lib/MarqueeSelection";
 import { Fabric } from "office-ui-fabric-react/lib/Fabric";
 import { mergeStyles } from "office-ui-fabric-react/lib/Styling";
 import { Text } from "office-ui-fabric-react/lib/Text";
-import { Spinner, Label, SwatchColorPicker } from "office-ui-fabric-react";
+import { Spinner, Label, ProgressIndicator } from "office-ui-fabric-react";
 import { Link } from "react-router-dom";
 import { IOverflowSetItemProps, OverflowSet } from "office-ui-fabric-react/lib/OverflowSet";
 import { MyRegistryDetailList } from "./MyRegistryDetailList";
 import axios from "axios";
 import { StaticConst } from "../helper/Const";
 import { AsyncHelper } from "../helper/AsyncHelper";
+import ConvertNumberToCurrenty from '../helper/Common'
 //import { _ } from "core-js";
 import _ from "lodash";
 import moment from "moment";
@@ -53,7 +54,7 @@ export class ViewAllListItems extends React.Component {
         try {
           this.helper
             .getData(`/sites/${StaticConst.siteId}/lists/${StaticConst.lists.TCGProjectRegistry}/items?$expand=fields`)
-            .then((res) => {              
+            .then((res) => {
               this.setState({
                 items: this.filterListItems(
                   res.data.value,
@@ -94,8 +95,8 @@ export class ViewAllListItems extends React.Component {
         }
       });
     }
-    
-    var filteredByRecord= _.orderBy(
+
+    var filteredByRecord = _.orderBy(
       items,
       [
         (item) => {
@@ -135,53 +136,54 @@ export class ViewAllListItems extends React.Component {
 
   _renderItemColumn(item, index, column) {
     function ColorIconBasedOnStatus({ nextDate }) {
-      
       var todaysDate = moment();
       var next5Days = moment().add(5, "days");
       var dateValue = moment(nextDate);
-      let color = [];
+      let color;
 
       if (dateValue.isAfter(todaysDate) && dateValue.isBefore(next5Days)) {
         color = "yellow icon";
       } else if (dateValue.isSameOrBefore(todaysDate)) {
         //today or older
-        color =  "red icon" ;
+        color = "red icon";
       } else {
         color = "blue icon";
       }
-
-      return (
-        <div
-          
-          className={color}
-          
-        />
-      );
+      return <div className={color} />;
     }
 
     return (
       <React.Fragment>
         <div className="listing">
-            <div className="icon-block">
-              <ColorIconBasedOnStatus nextDate={item.fields.Next_x0020_Contact_x0020_Date}></ColorIconBasedOnStatus>
-            </div>
-            <div className="content-list">
-                <div className="list-title">
-                  <Link
+          <div className="icon-block">
+            <ColorIconBasedOnStatus nextDate={item.fields.Next_x0020_Contact_x0020_Date}></ColorIconBasedOnStatus>
+          </div>
+          <div className="content-list">
+            <div className="list-title">
+              <Link
                 to={{ pathname: "/ViewListItemDetails", selectedItemFields: item.fields }}
-                className="btn-primary full-width"
+                className="btn-primary full-width" title={`${item.fields.Bid_x0020__x0023_} ${item.fields.Project_x0020_Name}`}
               >
                 {item.fields.Bid_x0020__x0023_} {item.fields.Project_x0020_Name}
               </Link>
-              </div>
-              <div className="inner-content">
-                  <p><label>Next :</label> <span>{moment(item.fields.Next_x0020_Contact_x0020_Date).format("YYYY-MM-DD")}</span></p>
-                  <p><label>Status :</label> <span>{item.fields.Status}</span></p>
-                  <p><label>Value :</label> <span>$ { (Math.round(item.fields.Estimated_x0020_Project_x0020_Va * 100) / 100).toLocaleString()}</span></p>
-              </div>
             </div>
+            <div className="inner-content">
+              <p>
+                <label>Next :</label>{" "}
+                <span>{moment(item.fields.Next_x0020_Contact_x0020_Date).format("YYYY-MM-DD")}</span>
+              </p>
+              <p>
+                <label>Status :</label> <span>{item.fields.Status}</span>
+              </p>
+              <p>
+                <label>Value :</label>{" "}
+                {/* <span> $ {(Math.round(item.fields.Estimated_x0020_Project_x0020_Va * 100) / 100).toLocaleString()}</span> */}
+                <span>{ConvertNumberToCurrenty(item.fields.Estimated_x0020_Project_x0020_Va)}</span>
+              </p>
+            </div>
+          </div>
         </div>
-        </React.Fragment>
+      </React.Fragment>
     );
   }
   onRenderDetailsHeader(detailsHeaderProps) {
@@ -198,40 +200,39 @@ export class ViewAllListItems extends React.Component {
         {this.state.isLoading == true && (
           <center>
             <div className="loding-block">
-            <Label>Please wait</Label>
-            <Spinner
-              label={`Getting Details selected item...`}
-            />
+              {/* <Label>Please wait</Label>
+              <Spinner label={`Retriving all items for `} /> */}
+              <ProgressIndicator label="Please wait..." description={`Getting results for user ${Office.context.mailbox.userProfile.displayName}`} />
             </div>
           </center>
         )}
 
         {this.state.isLoading == false && this.state.error == null && (
           <div>
-                <h3 class="title">My Registry with Next Contact Date</h3>
+            <h3 className="title">My Registry with Next Contact Date</h3>
             <div className="ms-Grid" dir="ltr">
-            <div className="ms-Grid-row content-block">
-              {this.state.items.length<1 && <Label>No Record Found</Label>}
-              <MarqueeSelection selection={this._selection}>
-                <DetailsList
-                  items={this.state.items}
-                  columns={this._columns}
-                  selectionMode={SelectionMode.none}
-                  setKey="set"
-                  layoutMode={DetailsListLayoutMode.justified}
-                  selection={this._selection}
-                  selectionPreservedOnEmptyClick={false}
-                  ariaLabelForSelectionColumn="Toggle selection"
-                  ariaLabelForSelectAllCheckbox="Toggle selection for all items"
-                  checkButtonAriaLabel="select row"
-                  onItemInvoked={this._onItemInvoked}
-                  onRenderItemColumn={this._renderItemColumn}
-                  onRenderDetailsHeader={this.onRenderDetailsHeader}
-                />
-              </MarqueeSelection>
+              <div className="ms-Grid-row content-block">
+                {this.state.items.length < 1 && <Label>No Record Found</Label>}
+                <MarqueeSelection selection={this._selection}>
+                  <DetailsList
+                    items={this.state.items}
+                    columns={this._columns}
+                    selectionMode={SelectionMode.none}
+                    setKey="set"
+                    layoutMode={DetailsListLayoutMode.justified}
+                    selection={this._selection}
+                    selectionPreservedOnEmptyClick={false}
+                    ariaLabelForSelectionColumn="Toggle selection"
+                    ariaLabelForSelectAllCheckbox="Toggle selection for all items"
+                    checkButtonAriaLabel="select row"
+                    onItemInvoked={this._onItemInvoked}
+                    onRenderItemColumn={this._renderItemColumn}
+                    onRenderDetailsHeader={this.onRenderDetailsHeader}
+                  />
+                </MarqueeSelection>
+              </div>
             </div>
           </div>
-        </div>
         )}
       </div>
     );

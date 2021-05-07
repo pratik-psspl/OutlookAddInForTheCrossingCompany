@@ -12,13 +12,17 @@ import {
   Label,
   Dialog,
   DialogFooter,
-  DialogType,Spinner,DefaultButton
+  DialogType,
+  Spinner,
+  DefaultButton,
+  ProgressIndicator,
 } from "office-ui-fabric-react";
 import { Link as RouterLink } from "react-router-dom";
 import { MyRegistryDetailList } from "./MyRegistryDetailList";
 import { StaticConst } from "../helper/Const";
 import { AsyncHelper } from "../helper/AsyncHelper";
 import moment from "moment";
+import ConvertNumberToCurrenty from "../helper/Common";
 export class ViewListItemDetails extends React.Component {
   helper = new AsyncHelper(this.props.Authorization);
 
@@ -48,7 +52,10 @@ export class ViewListItemDetails extends React.Component {
       ContactsDetails: [],
       CompanyDetails: [],
       Modified: null,
+      lastModifiedBy: "",
       hideDisplayDialogToRefresh: true,
+      hideSaveSuccessfullyDialog: true,
+      isSaveInProgress: false,
     };
   }
   componentDidMount() {
@@ -165,7 +172,10 @@ export class ViewListItemDetails extends React.Component {
                 Title: _fldItems["Title"], //Project Owner
                 ContactsDetails: this.grabAllContactsDetails(_fldItems),
                 Modified: _fldItems["Modified"],
+                lastModifiedBy: res.data.lastModifiedBy["user"]["displayName"],
                 hideDisplayDialogToRefresh: true,
+                hideSaveSuccessfullyDialog: true,
+                isSaveInProgress: false,
               });
             })
             .catch((e) => {
@@ -184,27 +194,27 @@ export class ViewListItemDetails extends React.Component {
     this.setState({ Status: option.text });
   };
   onSaveClick() {
-    this.helper
-      .getData(
-        `/sites/${StaticConst.siteId}/lists/${StaticConst.lists.TCGProjectRegistry}/items/${this.props.location.selectedItemFields.id}?$expand=fields`
-      )
-      .then((res) => {
-        const _fldItems = res.data.fields;
-        let _latestModified = moment(_fldItems["Modified"]);
-        let _currentModified = moment(this.state.Modified);
-        if (_latestModified.isSame(_currentModified)) {
-          let param = {
-            Comments: this.state["Comments"],
-            Next_x0020_Contact_x0020_Date: this.state["Next_x0020_Contact_x0020_Date"]
-              ? moment(this.state["Next_x0020_Contact_x0020_Date"]).format("LLL")
-              : null,
-            Status: this.state.Status,
-          };
-          this.setState(
-            {
-              isdataLoading: true,
-            },
-            () => {
+    this.setState(
+      {
+        isSaveInProgress: true,
+      },
+      () => {
+        this.helper
+          .getData(
+            `/sites/${StaticConst.siteId}/lists/${StaticConst.lists.TCGProjectRegistry}/items/${this.props.location.selectedItemFields.id}?$expand=fields`
+          )
+          .then((res) => {
+            const _fldItems = res.data.fields;
+            let _latestModified = moment(_fldItems["Modified"]);
+            let _currentModified = moment(this.state.Modified);
+            if (_latestModified.isSame(_currentModified)) {
+              let param = {
+                Comments: this.state["Comments"],
+                Next_x0020_Contact_x0020_Date: this.state["Next_x0020_Contact_x0020_Date"]
+                  ? moment(this.state["Next_x0020_Contact_x0020_Date"]).format("LLL")
+                  : null,
+                Status: this.state.Status,
+              };
               try {
                 this.helper
                   .postData(
@@ -212,26 +222,53 @@ export class ViewListItemDetails extends React.Component {
                     param
                   )
                   .then((res) => {
-                    this.handleRefreshClick();
-                  })
-                  .catch((e) => {});
+                    this.setState(
+                      {
+                        hideSaveSuccessfullyDialog: false,
+                        isSaveInProgress: false,
+                      },
+                      () => {
+                        this.handleRefreshClick();
+                      }
+                    );
+                  });
               } catch (ex) {
                 throw new Error(ex);
               }
+            } else {
+              this.setState({
+                hideDisplayDialogToRefresh: false,
+                isSaveInProgress: false,
+              });
             }
-          );
-        } else {
-          this.setState({
-            hideDisplayDialogToRefresh: false,
           });
-        }
-      });
+      }
+    );
   }
   render() {
     const styles = { root: { display: "inline-block" } };
     const calloutProps = { gapSpace: 0 };
     if (this.state.isdataLoading) {
-      return <center><div className="loding-block"><Label>Please wait</Label><Spinner message="" label="Getting Data from SharePoint List..." /></div></center>;
+      return (
+        <center>
+          <div className="loding-block">
+            {/* <Label>Please wait</Label>
+            <Spinner message="" label="Getting Data from SharePoint List..." /> */}
+
+            <ProgressIndicator label="Hold a sec..." description="Getting details for the selected record" />
+          </div>
+        </center>
+      );
+    }
+    if (this.state.isSaveInProgress) {
+      return (
+        <center>
+          <div className="loding-block">
+            <Label>Please wait</Label>
+            <Spinner message="" label="Updating a record..." />
+          </div>
+        </center>
+      );
     }
     function DisplayItemsFromMultiLookUp({ objArray, displayName, forCompany }) {
       if (forCompany) {
@@ -328,7 +365,9 @@ export class ViewListItemDetails extends React.Component {
             </div>
           </div>
           <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm12">{this.state.Bid_x0020__x0023_}</div>
+            <div className="ms-Grid-col ms-sm12">
+              <Link target="_blank" href={`${StaticConst.spSite}sitepages/iw_EditForm.aspx?pageType=6&lID=${StaticConst.lists.TCGProjectRegistry}&itemID=${this.props.location.selectedItemFields.id}`}>{this.state.Bid_x0020__x0023_}</Link>
+            </div>
           </div>
           <div className="ms-Grid-row">
             <div className="ms-Grid-col ms-sm12">{this.state.Project_x0020_Name}</div>
@@ -345,7 +384,9 @@ export class ViewListItemDetails extends React.Component {
             </div>
           </div>
           <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm6">$ { (Math.round(this.state.Estimated_x0020_Project_x0020_Va * 100) / 100).toLocaleString()} </div>
+            <div className="ms-Grid-col ms-sm6">
+              {ConvertNumberToCurrenty(this.state.Estimated_x0020_Project_x0020_Va)}{" "}
+            </div>
             <div className="ms-Grid-col ms-sm6">{this.state.Bid_x0020_Due_x0020_Date}</div>
           </div>
           <DisplayItemsFromMultiLookUp objArray={this.state.ContactsDetails} displayName="Client Contacts" />
@@ -452,9 +493,12 @@ export class ViewListItemDetails extends React.Component {
           </div>
           <div className="ms-Grid-row">
             <div className="ms-Grid-col ms-sm12">
-              Last Updated : {moment(this.state.Modified).format("LLL").toString()}
+              <i>
+                Last Updated : {moment(this.state.Modified).format("LLL").toString()}- {this.state.lastModifiedBy}
+              </i>
             </div>
           </div>
+          {/* Confirm dialog for merge/update conflict */}
           <Dialog
             hidden={this.state.hideDisplayDialogToRefresh}
             onDismiss={this.handleRefreshClick}
@@ -462,13 +506,26 @@ export class ViewListItemDetails extends React.Component {
               type: DialogType.normal,
               title: "Update Conflict",
               closeButtonAriaLabel: "Close",
-              subText: "Someone has updated the item, please reload item and continue...",
+              subText: "Someone has updated the record, Please reload and continue.",
             }}
-            //modalProps={modalProps}
           >
             <DialogFooter>
               <PrimaryButton onClick={this.handleRefreshClick} text="Reload" />
-              {/* <DefaultButton  text="Don't send" /> */}
+            </DialogFooter>
+          </Dialog>
+          {/* Save successsfully dialogue */}
+          <Dialog
+            hidden={this.state.hideSaveSuccessfullyDialog}
+            onDismiss={this.handleRefreshClick}
+            dialogContentProps={{
+              type: DialogType.normal,
+              title: "Saved Successfully!",
+              closeButtonAriaLabel: "Close",
+              subText: "Item updated, Please click OK to view the changes.",
+            }}
+          >
+            <DialogFooter>
+              <PrimaryButton onClick={this.handleRefreshClick} text="OK" />
             </DialogFooter>
           </Dialog>
         </div>

@@ -8,6 +8,7 @@ export class CurrentUserDetails extends React.Component {
     this.state = {
       displayName: "",
       mail: "",
+      displayUser: false,
     };
   }
   componentDidMount() {
@@ -17,6 +18,7 @@ export class CurrentUserDetails extends React.Component {
       this.setState({
         displayName: res.data.displayName,
         mail: res.data.mail,
+        displayUser: true,
       });
     });
   }
@@ -27,9 +29,11 @@ export class CurrentUserDetails extends React.Component {
       showSecondaryText: true,
     };
     return (
-      <div className="contactDetailsFooter">
-        <Persona {...examplePersona} size={PersonaSize.size24} imageAlt="Annie Ried, status is unknown" />
-      </div>
+      this.state.displayUser && (
+        <div className="contactDetailsFooter">
+          <Persona {...examplePersona} size={PersonaSize.size24} imageAlt="Annie Ried, status is unknown" />
+        </div>
+      )
     );
   }
 }
